@@ -1,0 +1,6 @@
+venv
+diamonds.joblib
+.idea
+__pycache__/
+*.joblib
+*__pycache__*
