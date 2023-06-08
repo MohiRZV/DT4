@@ -71,7 +71,8 @@ $(document).ready(function() {
     event.preventDefault();
 
     var formData = $("#fieldsForm").serialize();
-
+    $("#prediction-result").text("Processing");
+    $("#result-head").text("Result:");
     $.ajax({
       type: "POST",
       url: "/diamonds",
@@ -83,7 +84,7 @@ $(document).ready(function() {
         console.log(error);
       }
     });
-    $("#prediction-result").text("Processing");
+
   });
 
   $(document).on("submit", "#columnForm", function(event) {
@@ -309,6 +310,7 @@ $(document).ready(function() {
         $('#testContainer').html(response)
       },
       error: function(error) {
+        alert("Training failed! Ensure the training features are all numeric!");
         console.log(error);
       }
     });

@@ -64,10 +64,21 @@ class DataAnalysis:
         self.model = None
         self.fitted = None
         self.encoding = None
+        self.is_target_encoded = False
 
     def reinit(self, file_path):
         self.file_path = file_path
         self.data = pd.read_csv(self.file_path)
+        self.X = []
+        self.y = []
+        self.features = []
+        self.target = []
+        self.encoder = None
+        self.encoded_columns = []
+        self.model = None
+        self.fitted = None
+        self.encoding = None
+        self.is_target_encoded = False
 
     def get_shape(self):
         return self.data.shape
@@ -116,6 +127,7 @@ class DataAnalysis:
         if not pd.api.types.is_numeric_dtype(self.y):
             self.y = self.y.values.reshape(-1, 1)
             self.y = self.encoder.fit_transform(self.y)
+            self.is_target_encoded = True
 
         string_columns = self.X.select_dtypes(include='object').columns
         self.encoded_columns = string_columns
@@ -150,6 +162,7 @@ class DataAnalysis:
 
         if not pd.api.types.is_numeric_dtype(self.y):
             self.y = self.encoder.fit_transform(self.y)
+            self.is_target_encoded = True
 
         string_columns = self.X.select_dtypes(include='object').columns
         self.encoded_columns = string_columns
@@ -189,7 +202,8 @@ class DataAnalysis:
 
         print(converted_data)
         prediction = self.model.predict(np.array(converted_data).reshape(1, -1))
-        prediction = self.encoder.inverse_transform(prediction)
+        if self.is_target_encoded:
+            prediction = self.encoder.inverse_transform(prediction)
         print(prediction)
         return prediction
 

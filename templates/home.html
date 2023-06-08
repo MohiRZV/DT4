@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" id="fileInput">
-        <input type="submit" value="Upload">
+    <form id="uploadForm" enctype="multipart/form-data" style="margin:15px">
+        <input type="file" name="file" id="fileInput" class="custom-file-input"><br><br>
+        <input type="submit" value="Upload" class="btn btn-primary">
     </form>
     <div style="margin-top:15px; margin-left: 15px;">
     <div>
@@ -59,7 +59,7 @@
             <div id="testContainer">
 
             </div>
-            <div>Result:</div><br><br>
+            <div id="result-head"></div><br><br>
             <div id="result" class="prediction-result"></div>
         </div>
         </div>
