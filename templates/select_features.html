@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <form id="columnForm" action="{{ url_for('select_features') }}" method="POST">
+  <label for="columns">Select feature columns:</label><br>
+  {% for column in columns %}
+    <input type="checkbox" id="{{ column }}" name="columns[]" value="{{ column }}">
+    <label for="{{ column }}">{{ column }}</label><br>
+
+  {% endfor %}
+    <br><br>
+  <label for="targetColumn">Select the target column:</label><br>
+    <select id="targetColumn" name="targetColumn">
+    {% for column in columns %}
+      <option value="{{ column }}">{{ column }}</option>
+    {% endfor %}
+  </select><br><br>
+  <input type="submit" id="button-select-features" class="btn btn-primary" value="Submit">
+    <br><br>
+    <div id="selected_columns"></div>
+</form>
+</body>
+</html>

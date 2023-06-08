@@ -1,29 +1,71 @@
 $(document).ready(function() {
-  // Button click event handlers
-  $("#button1").click(function() {
-    scrollToTop()
-    displayShape();
-  });
+    $('#uploadForm').submit(function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
 
-  $("#button2").click(function() {
-    scrollToTop()
-    displayDtypes();
-  });
+        $.ajax({
+          url: '/upload',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            alert(response); // Show a success message
+          },
+          error: function(xhr, status, error) {
+            alert('Error: ' + error); // Show an error message
+          }
+        });
+        $("#prediction-result").text("");
+        $("#display-area-ml").text("");
+    });
+    // Button click event handlers
+    $("#button1").click(function() {
+        scrollToTop()
+        displayShape();
+    });
 
-  $("#button3").click(function() {
-    scrollToTop()
-    addNumericInput(displayHead)
-  });
+    $("#button2").click(function() {
+        scrollToTop()
+        displayDtypes();
+    });
 
-  $("#button4").click(function() {
-    scrollToTop()
-    addNumericInput(displayTail)
-  });
+    $("#button3").click(function() {
+        scrollToTop()
+        addNumericInput(displayHead)
+    });
 
-  $("#button5").click(function() {
-    scrollToTop()
-    displayStatistics();
-  });
+    $("#button4").click(function() {
+        scrollToTop()
+        addNumericInput(displayTail)
+    });
+
+    $("#button5").click(function() {
+        scrollToTop()
+        displayStatistics();
+    });
+
+    $("#button6").click(function() {
+        scrollToTop()
+        displayDropna()
+    });
+
+    $("#buttonFeatures").click(function() {
+        displayFeatures();
+    });
+
+    $("#buttonOneHot").click(function() {
+        oneHotEncode();
+    });
+
+    $("#buttonLabelEncode").click(function() {
+        labelEncode();
+    });
+
+    $("#buttonTrain").click(function() {
+        train();
+    });
+
 
   $("#button-predict").on("click", function(event) {
     event.preventDefault();
@@ -42,6 +84,43 @@ $(document).ready(function() {
       }
     });
     $("#prediction-result").text("Processing");
+  });
+
+  $(document).on("submit", "#columnForm", function(event) {
+    event.preventDefault();
+
+    var formData = $("#columnForm").serialize();
+
+    $.ajax({
+      type: "POST",
+      url: "/select_features",
+      data: formData,
+      success: function(response) {
+        $("#selected_columns").text(response);
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  });
+
+  $(document).on("submit", "#predictForm", function(event) {
+    event.preventDefault();
+
+    var formData = $("#predictForm").serialize();
+
+    $.ajax({
+      type: "POST",
+      url: "/predict",
+      data: formData,
+      success: function(response) {
+        $("#result").text(response);
+      },
+      error: function(error) {
+        alert("Invalid inputs or model not trained!");
+        console.log(error);
+      }
+    });
   });
 
   function addNumericInput(submitFunction) {
@@ -158,4 +237,81 @@ $(document).ready(function() {
       }
     });
   }
+  function displayDropna() {
+    // Make an AJAX request to the server to fetch the table data
+    $.ajax({
+      url: "/dropna",
+      method: "GET",
+      success: function(response) {
+        $("#display-area").html(response);
+        $("#result-title").text("Dropna");
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
+
+  function displayFeatures() {
+    $.ajax({
+      url: '/get_features',
+      type: 'GET',
+      success: function(response) {
+        // Load the form content into the container div
+        $('#formContainer').html(response);
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
+
+  function oneHotEncode() {
+    $.ajax({
+      url: '/one_hot_encode',
+      type: 'GET',
+      success: function(response) {
+        // Load the form content into the container div
+        $('#display-area-ml').html(response);
+      },
+      error: function(error) {
+        alert("No features selected!");
+        console.log(error);
+      }
+    });
+  }
+
+  function labelEncode() {
+    $.ajax({
+      url: '/label_encode',
+      type: 'GET',
+      success: function(response) {
+        // Load the form content into the container div
+        $('#display-area-ml').html(response);
+      },
+      error: function(error) {
+        alert("No features selected!");
+        console.log(error);
+      }
+    });
+  }
+
+  function train() {
+    var algorithm = $("#algorithm").val();
+    $('#display-area-ml').html("Training " + algorithm);
+
+    $.ajax({
+      type: "POST",
+      url: "/train",
+      data: {algorithm: algorithm},
+      success: function(response) {
+        alert("Model finished training!");
+        $('#testContainer').html(response)
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+  }
+
 });

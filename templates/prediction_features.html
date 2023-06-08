@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<form id="predictForm" action="{{ url_for('predict') }}" method="POST">
+  {% for column in columns %}
+    <label for="{{ column }}">{{ column }}</label>
+    <input type="text" id="{{ column }}" name="{{ column }}"><br>
+  {% endfor %}
+  <input type="submit" id="button-select-features" class="btn btn-primary" value="Predict">
+</form>
+</body>
+</html>
